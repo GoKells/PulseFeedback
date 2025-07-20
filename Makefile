@@ -2,18 +2,30 @@
 
 # Build the application
 all: build test
+templ-install:
+	@if ! command -v templ > /dev/null; then \
+		read -p "Go's 'templ' is not installed on your machine. Do you want to install it? [Y/n] " choice; \
+		if [ "$$choice" != "n" ] && [ "$$choice" != "N" ]; then \
+			go install github.com/a-h/templ/cmd/templ@latest; \
+			if [ ! -x "$$(command -v templ)" ]; then \
+				echo "templ installation failed. Exiting..."; \
+				exit 1; \
+			fi; \
+		else \
+			echo "You chose not to install templ. Exiting..."; \
+			exit 1; \
+		fi; \
+	fi
 
-build:
+build: templ-install
 	@echo "Building..."
-	
+	@templ generate
 	
 	@go build -o main cmd/api/main.go
 
 # Run the application
 run:
-	@go run cmd/api/main.go &
-	@npm install --prefer-offline --no-fund --prefix ./frontend
-	@npm run dev --prefix ./frontend
+	@go run cmd/api/main.go
 # Create DB container
 docker-run:
 	@if docker compose up --build 2>/dev/null; then \
@@ -63,4 +75,4 @@ watch:
             fi; \
         fi
 
-.PHONY: all build run test clean watch docker-run docker-down itest
+.PHONY: all build run test clean watch docker-run docker-down itest templ-install

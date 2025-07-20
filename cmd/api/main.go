@@ -1,6 +1,7 @@
 package main
 
 import (
+	"PulseFeedback/internal/server"
 	"context"
 	"fmt"
 	"log"
@@ -9,7 +10,6 @@ import (
 	"strconv"
 	"syscall"
 	"time"
-	"PlulseFeedback/internal/server"
 
 	_ "github.com/joho/godotenv/autoload"
 )
